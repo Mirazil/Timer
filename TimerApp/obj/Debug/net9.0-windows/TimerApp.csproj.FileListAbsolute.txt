@@ -1,0 +1,14 @@
+I:\Timer\TimerApp\obj\Debug\net9.0-windows\TimerApp.GeneratedMSBuildEditorConfig.editorconfig
+I:\Timer\TimerApp\obj\Debug\net9.0-windows\TimerApp.AssemblyInfoInputs.cache
+I:\Timer\TimerApp\obj\Debug\net9.0-windows\TimerApp.AssemblyInfo.cs
+I:\Timer\TimerApp\obj\Debug\net9.0-windows\TimerApp.csproj.CoreCompileInputs.cache
+I:\Timer\TimerApp\bin\Debug\net9.0-windows\TimerApp.exe
+I:\Timer\TimerApp\bin\Debug\net9.0-windows\TimerApp.deps.json
+I:\Timer\TimerApp\bin\Debug\net9.0-windows\TimerApp.runtimeconfig.json
+I:\Timer\TimerApp\bin\Debug\net9.0-windows\TimerApp.dll
+I:\Timer\TimerApp\bin\Debug\net9.0-windows\TimerApp.pdb
+I:\Timer\TimerApp\obj\Debug\net9.0-windows\TimerApp.dll
+I:\Timer\TimerApp\obj\Debug\net9.0-windows\refint\TimerApp.dll
+I:\Timer\TimerApp\obj\Debug\net9.0-windows\TimerApp.pdb
+I:\Timer\TimerApp\obj\Debug\net9.0-windows\TimerApp.genruntimeconfig.cache
+I:\Timer\TimerApp\obj\Debug\net9.0-windows\ref\TimerApp.dll
