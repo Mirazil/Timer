@@ -64,8 +64,8 @@ namespace TimerApp
         {
             if (m.Msg == WM_HOTKEY && m.WParam.ToInt32() == HOTKEY_ID)
             {
-                // Запускаем/перезапускаем таймер на 1:23
-                _overlay?.StartTimer();
+                // Переключаем таймер между запуском и остановкой
+                _overlay?.ToggleTimer();
             }
 
             base.WndProc(ref m);

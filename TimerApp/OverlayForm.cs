@@ -9,7 +9,9 @@ namespace TimerApp
     {
         private Label _timeLabel;
         private System.Windows.Forms.Timer _timer;
+        private readonly TimeSpan _defaultDuration = TimeSpan.FromSeconds(83);
         private TimeSpan _remaining;
+        private bool _isRunning;
 
         private bool _isDragging;
         private Point _dragStart;
@@ -38,7 +40,7 @@ namespace TimerApp
                 TextAlign = ContentAlignment.MiddleCenter,
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 24, FontStyle.Bold),
-                Text = "01:23"
+                Text = FormatTime(_defaultDuration)
             };
 
             Controls.Add(_timeLabel);
@@ -49,6 +51,8 @@ namespace TimerApp
                 Interval = 1000
             };
             _timer.Tick += Timer_Tick;
+
+            _remaining = _defaultDuration;
 
             // Перетаскивание формы мышью
             MouseDown += Overlay_MouseDown;
@@ -62,13 +66,23 @@ namespace TimerApp
         }
 
         /// <summary>
-        /// Запуск/перезапуск таймера на 1 минуту 23 секунды.
+        /// Переключает таймер между состояниями запуска и остановки с возвратом к значению по умолчанию.
         /// </summary>
-        public void StartTimer()
+        public void ToggleTimer()
         {
-            _remaining = TimeSpan.FromSeconds(83); // 1 мин 23 сек
+            if (_isRunning)
+            {
+                _timer.Stop();
+                _remaining = _defaultDuration;
+                _timeLabel.Text = FormatTime(_remaining);
+                _isRunning = false;
+                return;
+            }
+
+            _remaining = _defaultDuration;
             _timeLabel.Text = FormatTime(_remaining);
             _timer.Start();
+            _isRunning = true;
         }
 
         private void Timer_Tick(object? sender, EventArgs e)
@@ -78,6 +92,7 @@ namespace TimerApp
                 _timer.Stop();
                 _remaining = TimeSpan.Zero;
                 _timeLabel.Text = FormatTime(_remaining);
+                _isRunning = false;
                 return;
             }
 
