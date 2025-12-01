@@ -9,7 +9,7 @@ namespace TimerApp
     {
         private Label _timeLabel;
         private System.Windows.Forms.Timer _timer;
-        private readonly TimeSpan _defaultDuration = TimeSpan.FromSeconds(83);
+        private readonly TimeSpan _defaultDuration = TimeSpan.FromSeconds(90);
         private TimeSpan _remaining;
         private bool _isRunning;
 

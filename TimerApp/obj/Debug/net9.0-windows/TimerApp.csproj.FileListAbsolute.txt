@@ -12,3 +12,4 @@ I:\Timer\TimerApp\obj\Debug\net9.0-windows\refint\TimerApp.dll
 I:\Timer\TimerApp\obj\Debug\net9.0-windows\TimerApp.pdb
 I:\Timer\TimerApp\obj\Debug\net9.0-windows\TimerApp.genruntimeconfig.cache
 I:\Timer\TimerApp\obj\Debug\net9.0-windows\ref\TimerApp.dll
+I:\Timer\TimerApp\obj\Debug\net9.0-windows\TimerApp.sourcelink.json
