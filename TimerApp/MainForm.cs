@@ -10,6 +10,8 @@ namespace TimerApp
         private NotifyIcon _trayIcon;
         private ContextMenuStrip _trayMenu;
         private OverlayForm _overlay;
+        private ToolStripMenuItem _korovaMenuItem;
+        private ToolStripMenuItem _udarnikMenuItem;
 
         private const int HOTKEY_ID = 1;
         private const uint MOD_NONE = 0x0000;
@@ -36,6 +38,9 @@ namespace TimerApp
         {
             // Иконка в трее
             _trayMenu = new ContextMenuStrip();
+            AddDurationOptions();
+            _trayMenu.Items.Add("Сбросить местоположение", null, OnResetLocationClick);
+            _trayMenu.Items.Add(new ToolStripSeparator());
             _trayMenu.Items.Add("Выход", null, OnExitClick);
 
             _trayIcon = new NotifyIcon
@@ -50,6 +55,9 @@ namespace TimerApp
             _overlay = new OverlayForm();
             _overlay.Show();
 
+            // По умолчанию выбираем режим "Ударник"
+            SetDuration(TimeSpan.FromSeconds(90), _udarnikMenuItem);
+
             // Регистрируем глобальный хоткей "\" (Keys.Oem5)
             bool registered = RegisterHotKey(Handle, HOTKEY_ID, MOD_NONE, (uint)Keys.Oem5);
 
@@ -58,6 +66,30 @@ namespace TimerApp
                 MessageBox.Show("Не удалось зарегистрировать глобальный хоткей \"\\\".",
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void AddDurationOptions()
+        {
+            _korovaMenuItem = new ToolStripMenuItem("Корова (1:15)");
+            _udarnikMenuItem = new ToolStripMenuItem("Ударник (1:30)");
+
+            _korovaMenuItem.Click += (_, _) => SetDuration(TimeSpan.FromSeconds(75), _korovaMenuItem);
+            _udarnikMenuItem.Click += (_, _) => SetDuration(TimeSpan.FromSeconds(90), _udarnikMenuItem);
+
+            _trayMenu.Items.Add(_korovaMenuItem);
+            _trayMenu.Items.Add(_udarnikMenuItem);
+            _trayMenu.Items.Add(new ToolStripSeparator());
+        }
+
+        private void SetDuration(TimeSpan duration, ToolStripMenuItem selectedItem)
+        {
+            if (_overlay != null)
+            {
+                _overlay.SetDefaultDuration(duration);
+            }
+
+            _korovaMenuItem.Checked = selectedItem == _korovaMenuItem;
+            _udarnikMenuItem.Checked = selectedItem == _udarnikMenuItem;
         }
 
         protected override void WndProc(ref Message m)
@@ -74,6 +106,11 @@ namespace TimerApp
         private void OnExitClick(object? sender, EventArgs e)
         {
             Close();
+        }
+
+        private void OnResetLocationClick(object? sender, EventArgs e)
+        {
+            _overlay?.ResetLocationToDefault();
         }
 
         private void MainForm_FormClosing(object? sender, FormClosingEventArgs e)
