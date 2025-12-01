@@ -26,6 +26,11 @@ namespace TimerApp
 
             // Можно сразу где-то в углу экрана
             Location = new Point(100, 100);
+            var savedLocation = OverlayLocationStorage.Load();
+            if (savedLocation.HasValue)
+            {
+                Location = savedLocation.Value;
+            }
             BackColor = Color.Black;
             Opacity = 0.8; // чуть прозрачный, чтобы не бесил совсем
 
@@ -63,6 +68,8 @@ namespace TimerApp
             _timeLabel.MouseDown += Overlay_MouseDown;
             _timeLabel.MouseMove += Overlay_MouseMove;
             _timeLabel.MouseUp += Overlay_MouseUp;
+
+            FormClosing += OverlayForm_FormClosing;
         }
 
         /// <summary>
@@ -130,7 +137,18 @@ namespace TimerApp
             if (e.Button == MouseButtons.Left)
             {
                 _isDragging = false;
+                SaveLocation();
             }
+        }
+
+        private void OverlayForm_FormClosing(object? sender, FormClosingEventArgs e)
+        {
+            SaveLocation();
+        }
+
+        private void SaveLocation()
+        {
+            OverlayLocationStorage.Save(Location);
         }
     }
 }
