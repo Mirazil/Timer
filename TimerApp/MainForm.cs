@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Diagnostics;
+using System.Media;
 
 namespace TimerApp
 {
@@ -14,6 +15,7 @@ namespace TimerApp
         private ToolStripMenuItem _korovaMenuItem;
         private ToolStripMenuItem _udarnikMenuItem;
         private ToolStripMenuItem _hotkeyMenuItem;
+        private ToolStripMenuItem _soundMenuItem;
 
         private const int HOTKEY_ID = 1;
         private const uint MOD_NONE = 0x0000;
@@ -24,6 +26,7 @@ namespace TimerApp
 
         private Keys _currentHotkey = Keys.Oem5;
         private bool _isListeningForHotkey;
+        private bool _soundEnabled = true;
         private IntPtr _keyboardHookId = IntPtr.Zero;
         private readonly LowLevelKeyboardProc _keyboardProc;
 
@@ -65,6 +68,7 @@ namespace TimerApp
             // Иконка в трее
             _trayMenu = new ContextMenuStrip();
             AddDurationOptions();
+            AddSoundOption();
             AddHotkeyOption();
             _trayMenu.Items.Add("Сбросить местоположение", null, OnResetLocationClick);
             _trayMenu.Items.Add(new ToolStripSeparator());
@@ -80,6 +84,8 @@ namespace TimerApp
 
             // Создаём и показываем оверлей
             _overlay = new OverlayForm();
+            _overlay.TimerStarted += (_, _) => PlayBeepIfEnabled();
+            _overlay.TimerFinished += (_, _) => PlayBeepIfEnabled();
             _overlay.Show();
 
             // По умолчанию выбираем режим "Ударник"
@@ -93,15 +99,15 @@ namespace TimerApp
             _korovaMenuItem = new ToolStripMenuItem("Корова (1:15)");
             _udarnikMenuItem = new ToolStripMenuItem("Ударник (1:30)");
 
-            _korovaMenuItem.Click += (_, _) => SetDuration(TimeSpan.FromSeconds(75), _korovaMenuItem);
-            _udarnikMenuItem.Click += (_, _) => SetDuration(TimeSpan.FromSeconds(90), _udarnikMenuItem);
+            _korovaMenuItem.Click += (_, _) => SetDuration(TimeSpan.FromSeconds(75), _korovaMenuItem, true);
+            _udarnikMenuItem.Click += (_, _) => SetDuration(TimeSpan.FromSeconds(90), _udarnikMenuItem, true);
 
             _trayMenu.Items.Add(_korovaMenuItem);
             _trayMenu.Items.Add(_udarnikMenuItem);
             _trayMenu.Items.Add(new ToolStripSeparator());
         }
 
-        private void SetDuration(TimeSpan duration, ToolStripMenuItem selectedItem)
+        private void SetDuration(TimeSpan duration, ToolStripMenuItem selectedItem, bool triggeredByUser = false)
         {
             if (_overlay != null)
             {
@@ -110,6 +116,23 @@ namespace TimerApp
 
             _korovaMenuItem.Checked = selectedItem == _korovaMenuItem;
             _udarnikMenuItem.Checked = selectedItem == _udarnikMenuItem;
+
+            if (triggeredByUser)
+            {
+                PlayBeepIfEnabled();
+            }
+        }
+
+        private void AddSoundOption()
+        {
+            _soundMenuItem = new ToolStripMenuItem("Звуковое оповещение")
+            {
+                Checked = _soundEnabled,
+                CheckOnClick = true
+            };
+            _soundMenuItem.CheckedChanged += (_, _) => _soundEnabled = _soundMenuItem.Checked;
+            _trayMenu.Items.Add(_soundMenuItem);
+            _trayMenu.Items.Add(new ToolStripSeparator());
         }
 
         private void AddHotkeyOption()
@@ -180,6 +203,7 @@ namespace TimerApp
             _currentHotkey = newHotkey;
             RegisterActivationHotkey();
             UpdateHotkeyMenuText();
+            PlayBeepIfEnabled();
         }
 
         private void RegisterActivationHotkey()
@@ -233,6 +257,14 @@ namespace TimerApp
         private void OnResetLocationClick(object? sender, EventArgs e)
         {
             _overlay?.ResetLocationToDefault();
+        }
+
+        private void PlayBeepIfEnabled()
+        {
+            if (_soundEnabled)
+            {
+                SystemSounds.Beep.Play();
+            }
         }
 
         private void MainForm_FormClosing(object? sender, FormClosingEventArgs e)

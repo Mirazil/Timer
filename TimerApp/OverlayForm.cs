@@ -17,6 +17,9 @@ namespace TimerApp
         private Point _dragStart;
         private readonly Point _defaultLocation = new Point(100, 100);
 
+        public event EventHandler? TimerStarted;
+        public event EventHandler? TimerFinished;
+
         public OverlayForm()
         {
             // Визуальные настройки оверлея
@@ -95,6 +98,7 @@ namespace TimerApp
             _timeLabel.Text = FormatTime(_remaining);
             _timer.Start();
             _isRunning = true;
+            TimerStarted?.Invoke(this, EventArgs.Empty);
         }
 
         public void SetDefaultDuration(TimeSpan duration)
@@ -120,6 +124,7 @@ namespace TimerApp
                 _remaining = TimeSpan.Zero;
                 _timeLabel.Text = FormatTime(_remaining);
                 _isRunning = false;
+                TimerFinished?.Invoke(this, EventArgs.Empty);
                 return;
             }
 
