@@ -9,12 +9,13 @@ namespace TimerApp
     {
         private Label _timeLabel;
         private System.Windows.Forms.Timer _timer;
-        private readonly TimeSpan _defaultDuration = TimeSpan.FromSeconds(90);
+        private TimeSpan _defaultDuration = TimeSpan.FromSeconds(90);
         private TimeSpan _remaining;
         private bool _isRunning;
 
         private bool _isDragging;
         private Point _dragStart;
+        private readonly Point _defaultLocation = new Point(100, 100);
 
         public OverlayForm()
         {
@@ -25,11 +26,15 @@ namespace TimerApp
             StartPosition = FormStartPosition.Manual;
 
             // Можно сразу где-то в углу экрана
-            Location = new Point(100, 100);
+            Location = _defaultLocation;
             var savedLocation = OverlayLocationStorage.Load();
             if (savedLocation.HasValue)
             {
-                Location = savedLocation.Value;
+                ApplyLocation(savedLocation.Value);
+            }
+            else
+            {
+                ApplyLocation(_defaultLocation);
             }
             BackColor = Color.Black;
             Opacity = 0.8; // чуть прозрачный, чтобы не бесил совсем
@@ -92,6 +97,21 @@ namespace TimerApp
             _isRunning = true;
         }
 
+        public void SetDefaultDuration(TimeSpan duration)
+        {
+            _timer.Stop();
+            _defaultDuration = duration;
+            _remaining = _defaultDuration;
+            _timeLabel.Text = FormatTime(_remaining);
+            _isRunning = false;
+        }
+
+        public void ResetLocationToDefault()
+        {
+            ApplyLocation(_defaultLocation);
+            SaveLocation();
+        }
+
         private void Timer_Tick(object? sender, EventArgs e)
         {
             if (_remaining.TotalSeconds <= 0)
@@ -149,6 +169,20 @@ namespace TimerApp
         private void SaveLocation()
         {
             OverlayLocationStorage.Save(Location);
+        }
+
+        private void ApplyLocation(Point desiredLocation)
+        {
+            var workingArea = Screen.PrimaryScreen?.WorkingArea ?? Rectangle.Empty;
+
+            if (!workingArea.IsEmpty)
+            {
+                int x = Math.Min(Math.Max(workingArea.Left, desiredLocation.X), workingArea.Right - Width);
+                int y = Math.Min(Math.Max(workingArea.Top, desiredLocation.Y), workingArea.Bottom - Height);
+                desiredLocation = new Point(x, y);
+            }
+
+            Location = desiredLocation;
         }
     }
 }
