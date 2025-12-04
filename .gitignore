@@ -1,2 +1,33 @@
-TimerApp/bin/
-TimerApp/obj/
+# Build outputs
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+
+# Logs and caches
+*.log
+*.pidb
+*.cache
+
+# Resharper / Rider
+_ReSharper*/
+*.DotSettings.user
+.idea/
+
+# Other
+[Bb]uild/
+[Dd]ebug/
+[Rr]elease/
+**/Properties/launchSettings.json
