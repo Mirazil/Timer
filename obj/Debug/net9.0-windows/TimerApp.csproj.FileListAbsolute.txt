@@ -1,0 +1,5 @@
+I:\Timer\obj\Debug\net9.0-windows\TimerApp.GeneratedMSBuildEditorConfig.editorconfig
+I:\Timer\obj\Debug\net9.0-windows\TimerApp.AssemblyInfoInputs.cache
+I:\Timer\obj\Debug\net9.0-windows\TimerApp.AssemblyInfo.cs
+I:\Timer\obj\Debug\net9.0-windows\TimerApp.csproj.CoreCompileInputs.cache
+I:\Timer\obj\Debug\net9.0-windows\TimerApp.sourcelink.json
